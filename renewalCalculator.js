@@ -1,10 +1,5 @@
-console.log("beta jsdelivr");
-
 /*
 /* ========== BUSINESS LOGIC ========== */
-
-/** > comment */
-console.log("New Beta Loaded!!!");
 
 const config = {
   showProratedDiscounts: false,
@@ -237,14 +232,14 @@ function getPrice({
   const addons = {
     insightsAddOn: {
       enabled: insightsAddOn,
-      visible: planType === "starter" ? true : false,
+      visible: false,
       included: planType === "premium",
       price: planType === "premium" ? 0 : insightsAddOn ? addOnListPrice : 0,
       listPrice: addOnListPrice,
     },
     rewardsAddOn: {
       enabled: rewardsAddOn,
-      visible: planType === "starter" ? true : false,
+      visible: false,
       included: planType === "premium",
       price: planType === "premium" ? 0 : rewardsAddOn ? addOnListPrice : 0,
       listPrice: addOnListPrice,
@@ -705,48 +700,46 @@ let renewalDealId;
 
 // Determine if Renewal Deal ID is already won, lost or open
 function handleUrlRoute(url) {
-  //   const path = getPathAfterSlash(url);
-  //   renewalDealId = getParameterByName("renewalDealId");
-  //   // First check webhook status
-  //   fetch("https://hook.us1.make.com/i6ulb3tp4vmbjtibarokb1wzeiajm1nv", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({ renewalDealId: renewalDealId }),
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       // Store webhook status
-  //       const status = data.status || "open";
-  //       if (status === "won") {
-  //         console.log("Deal is won");
-  //         handleRenewalWon();
-  //       } else if (status === "lost") {
-  //         console.log("Deal is lost");
-  //         handleRenewalLost();
-  //       } else {
-  //         console.log("Deal is open or undefined");
-  //         routeBasedOnPath(path);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching webhook:", error);
-  //       // Continue with normal flow on error
-  //       routeBasedOnPath(path);
-  //     });
   const path = getPathAfterSlash(url);
-  routeBasedOnPath(path);
-  return true;
+  renewalDealId = getParameterByName("renewalDealId");
+
+  // First check webhook status
+  fetch("https://hook.us1.make.com/i6ulb3tp4vmbjtibarokb1wzeiajm1nv", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ renewalDealId: renewalDealId }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // Store webhook status
+      const status = data.status || "open";
+
+      if (status === "won") {
+        console.log("Deal is won");
+        handleRenewalWon();
+      } else if (status === "lost") {
+        console.log("Deal is lost");
+        handleRenewalLost();
+      } else {
+        console.log("Deal is open or undefined");
+        routeBasedOnPath(path);
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching webhook:", error);
+      // Continue with normal flow on error
+      routeBasedOnPath(path);
+    });
 }
 
 // Extract the path-based routing to a separate function
 function routeBasedOnPath(path) {
   // Check if path contains these strings instead of exact matches
-  //   if (path.includes("renewal-calculator")) {
-  //     handleRenewal();
-  //   } else if (path.includes("renewal-cancellation")) {
-  //     handleCancellation();
-  //   }
-  handleRenewal();
+  if (path.includes("renewal-calculator")) {
+    handleRenewal();
+  } else if (path.includes("renewal-cancellation")) {
+    handleCancellation();
+  }
 }
 
 function handleCancellation() {
@@ -2506,9 +2499,7 @@ function runRenewalLogic() {
     let baseRequiredFields = [];
 
     if (isEmailForm) {
-      baseRequiredFields = [
-        { id: "renewal-form__users", label: "How many Staff Users?" },
-      ];
+      baseRequiredFields = [{ id: "renewal-form__users", label: "How many Staff Users?" }];
     } else {
       baseRequiredFields = [
         { id: "renewal-form__users", label: "How many Staff Users?" },
