@@ -166,8 +166,8 @@ function getConfig() {
       users: config.userCount,
       districtDiscount: config.districtDiscount,
       legacyDiscount: config.legacyDiscount,
-      insightsAddOn: false,
-      rewardsAddOn: false,
+      insightsAddOn: config.insightsAddOn,
+      rewardsAddOn: config.rewardsAddOn,
       rubricAddOn: config.rubricAddOn,
       slOnboardingAddOn: config.slOnboardingAddOn,
       teacherTrainingAddOn: config.teacherTrainingAddOn,
@@ -307,16 +307,16 @@ function getPrice({
   ).toFixed(2);
   const totalSavings = fixNum(
     Number(legacyDiscountSavings) +
-      Number(districtDiscountSavings) +
-      Number(multiYearSavings)
+    Number(districtDiscountSavings) +
+    Number(multiYearSavings)
   );
 
   //const totalDiscount = parseFloat((legacyDiscount + districtDiscount + config.multiYearDiscounts[multiYear]).toFixed(2));
   let softwarePrice = fixNum(
     grossSoftwarePrice -
-      legacyDiscountSavings -
-      districtDiscountSavings -
-      multiYearSavings
+    legacyDiscountSavings -
+    districtDiscountSavings -
+    multiYearSavings
   );
 
   const yearOneCost = fixNum(
@@ -366,59 +366,59 @@ function getPrice({
   if (debug) {
     console.log(
       "$" +
-        basePrice +
-        ": Base for " +
-        users +
-        " at " +
-        basePerUser +
-        "/user on " +
-        planType +
-        "\n+" +
-        "$" +
-        softwareAddonPrice +
-        " for software addons\n" +
-        "=$" +
-        grossSoftwarePrice +
-        " gross for software\n\n" +
-        totalDiscount * 100 +
-        "% Total Discount ($" +
-        totalSavings +
-        "):\n  " +
-        multiYearDiscount * 100 +
-        "% Multi-Year Discount ($" +
-        multiYearSavings +
-        ")\n  " +
-        legacyDiscount * 100 +
-        "% Legacy Discount ($" +
-        legacyDiscountSavings +
-        ")\n  " +
-        districtDiscount * 100 +
-        "% District Discount ($" +
-        districtDiscountSavings +
-        ")\n\n" +
-        "=$" +
-        softwarePrice +
-        " for software after discounts\n\n" +
+      basePrice +
+      ": Base for " +
+      users +
+      " at " +
+      basePerUser +
+      "/user on " +
+      planType +
+      "\n+" +
+      "$" +
+      softwareAddonPrice +
+      " for software addons\n" +
+      "=$" +
+      grossSoftwarePrice +
+      " gross for software\n\n" +
+      totalDiscount * 100 +
+      "% Total Discount ($" +
+      totalSavings +
+      "):\n  " +
+      multiYearDiscount * 100 +
+      "% Multi-Year Discount ($" +
+      multiYearSavings +
+      ")\n  " +
+      legacyDiscount * 100 +
+      "% Legacy Discount ($" +
+      legacyDiscountSavings +
+      ")\n  " +
+      districtDiscount * 100 +
+      "% District Discount ($" +
+      districtDiscountSavings +
+      ")\n\n" +
+      "=$" +
+      softwarePrice +
+      " for software after discounts\n\n" +
+      "+$" +
+      trainingAddonPrice +
+      " for training addons\n" +
+      "=$" +
+      yearOneCost +
+      " year 1 cost for software & training\n\n" +
+      (multiYear == 1
+        ? ""
+        : "For a total term of " +
+        multiYear +
+        " year/s\n" +
         "+$" +
-        trainingAddonPrice +
-        " for training addons\n" +
+        extraYearsCost +
+        " for " +
+        (multiYear - 1) +
+        " additional years at $" +
+        softwarePrice +
+        "/year (software only)\n\n" +
         "=$" +
-        yearOneCost +
-        " year 1 cost for software & training\n\n" +
-        (multiYear == 1
-          ? ""
-          : "For a total term of " +
-            multiYear +
-            " year/s\n" +
-            "+$" +
-            extraYearsCost +
-            " for " +
-            (multiYear - 1) +
-            " additional years at $" +
-            softwarePrice +
-            "/year (software only)\n\n" +
-            "=$" +
-            price)
+        price)
     );
   }
 
@@ -446,12 +446,12 @@ function getPrice({
     "Legacy Discount":
       (config.currentPlan === "premiumPlus" ||
         config.currentPlan === "premium") &&
-      originalRecommendedPlan === "premium" &&
-      config.selectedPlan === "starter"
+        originalRecommendedPlan === "premium" &&
+        config.selectedPlan === "starter"
         ? 0
         : config.selectedPlan === "premium"
-        ? config.legacyDiscount
-        : legacyDiscount,
+          ? config.legacyDiscount
+          : legacyDiscount,
   };
 
   config.formIDs.forEach((formID) => {
@@ -573,9 +573,9 @@ function formatMoney(number, decPlaces, decSep, thouSep) {
     i.substr(j).replace(/(\decSep{3})(?=\decSep)/g, "$1" + thouSep) +
     (decPlaces
       ? decSep +
-        Math.abs(number - i)
-          .toFixed(decPlaces)
-          .slice(2)
+      Math.abs(number - i)
+        .toFixed(decPlaces)
+        .slice(2)
       : "")
   );
 }
@@ -1366,23 +1366,23 @@ function runRenewalLogic() {
     const addonData = {
       insightsAddOn: includeAddons
         ? document.getElementById("renewal-form__addon--insights")?.checked ||
-          false
+        false
         : false,
       rewardsAddOn: includeAddons
         ? document.getElementById("renewal-form__addon--rewards")?.checked ||
-          false
+        false
         : false,
       rubricAddOn: includeAddons
         ? document.getElementById("renewal-form__addon--unlimited-rubric")
-            ?.checked || false
+          ?.checked || false
         : false,
       slOnboardingAddOn: includeAddons
         ? document.getElementById("renewal-form__addon--admin-onboarding")
-            ?.checked || false
+          ?.checked || false
         : false,
       teacherTrainingAddOn: includeAddons
         ? document.getElementById("renewal-form__addon--teacher-training")
-            ?.checked || false
+          ?.checked || false
         : false,
     };
 
