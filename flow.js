@@ -238,14 +238,14 @@ function getPrice({
   const addons = {
     insightsAddOn: {
       enabled: insightsAddOn,
-      visible: false,
+      visible: planType === "starter" ? true : false,
       included: planType === "premium",
       price: planType === "premium" ? 0 : insightsAddOn ? addOnListPrice : 0,
       listPrice: addOnListPrice,
     },
     rewardsAddOn: {
       enabled: rewardsAddOn,
-      visible: false,
+      visible: planType === "starter" ? true : false,
       included: planType === "premium",
       price: planType === "premium" ? 0 : rewardsAddOn ? addOnListPrice : 0,
       listPrice: addOnListPrice,
