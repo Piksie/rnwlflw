@@ -207,6 +207,13 @@ function getPrice({
   showRecommendationMsg = true,
   debug = true,
 }) {
+  console.log('getPrice called with:', {
+    insightsAddOn,
+    rewardsAddOn, 
+    rubricAddOn,
+    'config.insightsAddOn': config.insightsAddOn,
+    'config.rewardsAddOn': config.rewardsAddOn
+  });
   // Consolidate legacy discount logic based on currentPlan
   if (
     (config.currentPlan === "premiumPlus" ||
