@@ -192,6 +192,12 @@ function fixNum(raw) {
   return Number(Number(raw).toFixed(2));
 }
 
+console.log('Config before getPrice:', {
+  insightsAddOn: config.insightsAddOn,
+  rewardsAddOn: config.rewardsAddOn,
+  rubricAddOn: config.rubricAddOn
+});
+
 function getPrice({
   users,
   districtDiscount = config.districtDiscount,
@@ -207,13 +213,6 @@ function getPrice({
   showRecommendationMsg = true,
   debug = true,
 }) {
-  console.log('getPrice called with:', {
-    insightsAddOn,
-    rewardsAddOn, 
-    rubricAddOn,
-    'config.insightsAddOn': config.insightsAddOn,
-    'config.rewardsAddOn': config.rewardsAddOn
-  });
   // Consolidate legacy discount logic based on currentPlan
   if (
     (config.currentPlan === "premiumPlus" ||
