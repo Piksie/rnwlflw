@@ -1102,13 +1102,14 @@ function runRenewalLogic() {
     }
 
     // Upsell modal functionality
+    const rewardsCheckbox = document.getElementById("renewal-form__addon--rewards");
+
     function setupUpsellModal() {
       const upsellModal = document.getElementById("upsell-modal");
       const upsellClose = document.getElementById("upsell-close");
       const upsellConfirm = document.getElementById("upsell-confirm");
       const upsellDeny = document.getElementById("upsell-deny");
       const upsellTotal = document.getElementById("upsell-total");
-      const rewardsCheckbox = document.getElementById("renewal-form__addon--rewards");
 
       function calculateUpsellTotal() {
         const currentPrice = document.getElementById("renewal-form__quote-display").textContent;
