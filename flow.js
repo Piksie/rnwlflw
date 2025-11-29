@@ -1103,29 +1103,29 @@ function runRenewalLogic() {
 
     // Upsell modal functionality
     const rewardsCheckbox = document.getElementById("renewal-form__addon--rewards");
+    const upsellModal = document.getElementById("upsell-modal");
+    const upsellTotal = document.getElementById("upsell-total");
+
+    function showUpsellModal() {
+      upsellModal.classList.add("visible");
+      document.body.style.overflow = "hidden";
+      const newTotal = calculateUpsellTotal();
+      upsellTotal.textContent = newTotal;
+    }
+
+    function calculateUpsellTotal() {
+      const currentPrice = document.getElementById("renewal-form__quote-display").textContent;
+      const rewardsAddon = document.getElementById("renewal-form__addon--rewards--price").textContent;
+      const currentPriceNum = parseFloat(currentPrice.replace(/[$,]/g, ''));
+      const rewardsPriceNum = parseFloat(rewardsAddon.replace(/[+$,]/g, ''));
+      const newTotal = currentPriceNum + rewardsPriceNum;
+      return formatPrice(newTotal);
+    }
 
     function setupUpsellModal() {
-      const upsellModal = document.getElementById("upsell-modal");
       const upsellClose = document.getElementById("upsell-close");
       const upsellConfirm = document.getElementById("upsell-confirm");
       const upsellDeny = document.getElementById("upsell-deny");
-      const upsellTotal = document.getElementById("upsell-total");
-
-      function calculateUpsellTotal() {
-        const currentPrice = document.getElementById("renewal-form__quote-display").textContent;
-        const rewardsAddon = document.getElementById("renewal-form__addon--rewards--price").textContent;
-        const currentPriceNum = parseFloat(currentPrice.replace(/[$,]/g, ''));
-        const rewardsPriceNum = parseFloat(rewardsAddon.replace(/[+$,]/g, ''));
-        const newTotal = currentPriceNum + rewardsPriceNum;
-        return formatPrice(newTotal);
-      }
-
-      function showUpsellModal() {
-        upsellModal.classList.add("visible");
-        document.body.style.overflow = "hidden";
-        const newTotal = calculateUpsellTotal();
-        upsellTotal.textContent = newTotal;
-      }
 
       window.playVideo = function () {
         const videoContainer = document.querySelector('#upsell-modal .r360-hero__video-container');
@@ -1140,18 +1140,6 @@ function runRenewalLogic() {
         videoContainer.style.display = 'block';
         thumbnail.style.display = 'none';
         iframeContainer.style.display = 'block';
-
-        // iframeContainer.innerHTML = `
-        //   <iframe 
-        //     src="https://www.youtube.com/embed/o0_qg242oZY?autoplay=1&mute=0" 
-        //     title="YouTube video player" 
-        //     frameborder="0" 
-        //     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-        //     referrerpolicy="strict-origin-when-cross-origin" 
-        //     allowfullscreen
-        //     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;">
-        //   </iframe>
-        // `;
 
         iframeContainer.innerHTML = `
           <style>
@@ -2523,7 +2511,7 @@ function runRenewalLogic() {
     displayFormStepOne();
   });
 
-  stepTwoTab.addEventListener("click", () => {
+  stepTwoTab.addEventListener("click", (e) => {
     const currentPlan = planSwitcher.currentPlan;
     const isRewardsChecked = rewardsCheckbox ? rewardsCheckbox.checked : false;
 
