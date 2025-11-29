@@ -1140,17 +1140,52 @@ function runRenewalLogic() {
         thumbnail.style.display = 'none';
         iframeContainer.style.display = 'block';
 
+        // iframeContainer.innerHTML = `
+        //   <iframe 
+        //     src="https://www.youtube.com/embed/o0_qg242oZY?autoplay=1&mute=0" 
+        //     title="YouTube video player" 
+        //     frameborder="0" 
+        //     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+        //     referrerpolicy="strict-origin-when-cross-origin" 
+        //     allowfullscreen
+        //     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;">
+        //   </iframe>
+        // `;
+
         iframeContainer.innerHTML = `
-          <iframe 
-            src="https://www.youtube.com/embed/o0_qg242oZY?autoplay=1&mute=0" 
-            title="YouTube video player" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            referrerpolicy="strict-origin-when-cross-origin" 
-            allowfullscreen
-            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;">
-          </iframe>
+          <style>
+            wistia-player[media-id='01qtcanx93']:not(:defined) {
+              background: center / contain no-repeat url(https://fast.wistia.com/embed/medias/01qtcanx93/swatch);
+              border-radius: 0px;
+              display: block;
+              filter: blur(5px);
+              padding-top: 56.25%;
+            }
+            wistia-player[media-id='01qtcanx93']:state(--initializing) {
+              background: center / contain no-repeat url(https://fast.wistia.com/embed/medias/01qtcanx93/swatch);
+              border-radius: 0px;
+              display: block;
+              filter: blur(5px);
+              padding-top: 56.25%;
+            }
+          </style>
+          <wistia-player 
+            media-id="01qtcanx93" 
+            aspect="1.7777777777777777" 
+            do-not-track="false" 
+            embed-host="fast.wistia.com"
+            autoplay="true"
+            style="width: 100%; height: 100%;">
+          </wistia-player>
         `;
+
+        // Load Wistia script if not already loaded
+        if (!window.Wistia) {
+          const script = document.createElement('script');
+          script.src = 'https://fast.wistia.com/assets/external/E-v1.js';
+          script.async = true;
+          document.head.appendChild(script);
+        }
       };
 
       function hideUpsellModal() {
