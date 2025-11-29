@@ -2495,8 +2495,29 @@ function runRenewalLogic() {
     displayFormStepOne();
   });
 
-  goToStepTwo.addEventListener("click", () => {
-    displayFormStepTwo();
+  // goToStepTwo.addEventListener("click", () => {
+  //   displayFormStepTwo();
+  // });
+
+  goToStepTwo.addEventListener("click", function (e) {
+    console.log("goToStepTwo clicked");
+    console.log("Current plan:", planSwitcher.currentPlan);
+    console.log("Rewards checkbox:", rewardsCheckbox);
+    console.log("Rewards checked:", rewardsCheckbox ? rewardsCheckbox.checked : "checkbox not found");
+
+    const currentPlan = planSwitcher.currentPlan;
+    const isRewardsChecked = rewardsCheckbox ? rewardsCheckbox.checked : false;
+
+    // Show modal if on starter plan and rewards not selected
+    if (currentPlan === "starter" && !isRewardsChecked) {
+      console.log("Should show modal!");
+      e.preventDefault();
+      e.stopPropagation();
+      showUpsellModal();
+    } else {
+      console.log("Skip modal, go to step 2");
+      displayFormStepTwo();
+    }
   });
 
   /*
