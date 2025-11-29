@@ -1127,19 +1127,19 @@ function runRenewalLogic() {
       }
 
       window.playVideo = function () {
+        const videoContainer = document.querySelector('#upsell-modal .r360-hero__video-container');
         const thumbnail = document.querySelector('#upsell-modal .video-thumbnail');
         const iframeContainer = document.querySelector('#upsell-modal #iframeContainer');
 
-        if (!iframeContainer || !thumbnail) {
+        if (!iframeContainer || !thumbnail || !videoContainer) {
           console.error('Could not find video elements');
           return;
         }
 
-        // Hide thumbnail, show iframe container
+        videoContainer.style.display = 'block';
         thumbnail.style.display = 'none';
         iframeContainer.style.display = 'block';
 
-        // Insert the iframe
         iframeContainer.innerHTML = `
           <iframe 
             src="https://www.youtube.com/embed/o0_qg242oZY?autoplay=1&mute=0" 
@@ -2495,27 +2495,16 @@ function runRenewalLogic() {
     displayFormStepOne();
   });
 
-  // goToStepTwo.addEventListener("click", () => {
-  //   displayFormStepTwo();
-  // });
-
   goToStepTwo.addEventListener("click", function (e) {
-    console.log("goToStepTwo clicked");
-    console.log("Current plan:", planSwitcher.currentPlan);
-    console.log("Rewards checkbox:", rewardsCheckbox);
-    console.log("Rewards checked:", rewardsCheckbox ? rewardsCheckbox.checked : "checkbox not found");
-
     const currentPlan = planSwitcher.currentPlan;
     const isRewardsChecked = rewardsCheckbox ? rewardsCheckbox.checked : false;
 
-    // Show modal if on starter plan and rewards not selected
+    // Show Upsell modal if on starter plan and rewards addon not selected
     if (currentPlan === "starter" && !isRewardsChecked) {
-      console.log("Should show modal!");
       e.preventDefault();
       e.stopPropagation();
       showUpsellModal();
     } else {
-      console.log("Skip modal, go to step 2");
       displayFormStepTwo();
     }
   });
