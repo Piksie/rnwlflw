@@ -2523,7 +2523,17 @@ function runRenewalLogic() {
   });
 
   stepTwoTab.addEventListener("click", () => {
-    displayFormStepTwo();
+    const currentPlan = planSwitcher.currentPlan;
+    const isRewardsChecked = rewardsCheckbox ? rewardsCheckbox.checked : false;
+
+    // Show Upsell modal if on starter plan and rewards addon not selected
+    if (currentPlan === "starter" && !isRewardsChecked) {
+      e.preventDefault();
+      e.stopPropagation();
+      showUpsellModal();
+    } else {
+      displayFormStepTwo();
+    }
   });
 
   goToStepOne.addEventListener("click", () => {
@@ -2667,6 +2677,14 @@ function runRenewalLogic() {
       baseRequiredFields = [
         { id: "renewal-form__users", label: "How many Staff Users?" },
         { id: "renewal-form__subscription-term", label: "Purchase Order" },
+        {
+          id: "renewal-form__name-firstname",
+          label: "Your Name - First Name",
+        },
+        {
+          id: "renewal-form__name-lastname",
+          label: "Your Name - Last Name",
+        },
         {
           id: "renewal-form__contact-firstname",
           label: "Invoice Contact - First Name",
