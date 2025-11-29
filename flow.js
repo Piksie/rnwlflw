@@ -877,6 +877,27 @@ function runRenewalLogic() {
   const invoiceDateDay = document.getElementById("renewal-form__invoice-day");
   const invoiceDateYear = document.getElementById("renewal-form__invoice-year");
 
+  // Upsell modal
+  const rewardsCheckbox = document.getElementById("renewal-form__addon--rewards");
+  const upsellModal = document.getElementById("upsell-modal");
+  const upsellTotal = document.getElementById("upsell-total");
+
+  function showUpsellModal() {
+    upsellModal.classList.add("visible");
+    document.body.style.overflow = "hidden";
+    const newTotal = calculateUpsellTotal();
+    upsellTotal.textContent = newTotal;
+  }
+
+  function calculateUpsellTotal() {
+    const currentPrice = document.getElementById("renewal-form__quote-display").textContent;
+    const rewardsAddon = document.getElementById("renewal-form__addon--rewards--price").textContent;
+    const currentPriceNum = parseFloat(currentPrice.replace(/[$,]/g, ''));
+    const rewardsPriceNum = parseFloat(rewardsAddon.replace(/[+$,]/g, ''));
+    const newTotal = currentPriceNum + rewardsPriceNum;
+    return formatPrice(newTotal);
+  }
+
   // Savings tooltip
   const savingsTooltip = document.getElementById(
     "renewal-form__savings-tooltip"
@@ -1102,26 +1123,6 @@ function runRenewalLogic() {
     }
 
     // Upsell modal functionality
-    const rewardsCheckbox = document.getElementById("renewal-form__addon--rewards");
-    const upsellModal = document.getElementById("upsell-modal");
-    const upsellTotal = document.getElementById("upsell-total");
-
-    function showUpsellModal() {
-      upsellModal.classList.add("visible");
-      document.body.style.overflow = "hidden";
-      const newTotal = calculateUpsellTotal();
-      upsellTotal.textContent = newTotal;
-    }
-
-    function calculateUpsellTotal() {
-      const currentPrice = document.getElementById("renewal-form__quote-display").textContent;
-      const rewardsAddon = document.getElementById("renewal-form__addon--rewards--price").textContent;
-      const currentPriceNum = parseFloat(currentPrice.replace(/[$,]/g, ''));
-      const rewardsPriceNum = parseFloat(rewardsAddon.replace(/[+$,]/g, ''));
-      const newTotal = currentPriceNum + rewardsPriceNum;
-      return formatPrice(newTotal);
-    }
-
     function setupUpsellModal() {
       const upsellClose = document.getElementById("upsell-close");
       const upsellConfirm = document.getElementById("upsell-confirm");
