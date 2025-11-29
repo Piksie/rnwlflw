@@ -890,12 +890,25 @@ function runRenewalLogic() {
   }
 
   function calculateUpsellTotal() {
-    const currentPrice = document.getElementById("renewal-form__quote-display").textContent;
-    const rewardsAddon = document.getElementById("renewal-form__addon--rewards--price").textContent;
-    const currentPriceNum = parseFloat(currentPrice.replace(/[$,]/g, ''));
-    const rewardsPriceNum = parseFloat(rewardsAddon.replace(/[+$,]/g, ''));
-    const newTotal = currentPriceNum + rewardsPriceNum;
-    return formatPrice(newTotal);
+    // Get current pricing configuration
+    const users = parseInt(document.getElementById("renewal-form__users").value) || 0;
+    const subscriptionTerm = document.getElementById("renewal-form__subscription-term");
+    const multiYear = subscriptionTerm ? parseInt(subscriptionTerm.value) : 1;
+    
+    // Calculate what the price would be with rewards addon enabled
+    const pricingDataWithRewards = {
+      users: users,
+      planType: planSwitcher.currentPlan,
+      multiYear: multiYear,
+      insightsAddOn: document.getElementById("renewal-form__addon--insights")?.checked || false,
+      rewardsAddOn: true,
+      rubricAddOn: document.getElementById("renewal-form__addon--unlimited-rubric")?.checked || false,
+      slOnboardingAddOn: document.getElementById("renewal-form__addon--admin-onboarding")?.checked || false,
+      teacherTrainingAddOn: document.getElementById("renewal-form__addon--teacher-training")?.checked || false,
+    };
+    
+    const newPriceData = getPrice(pricingDataWithRewards);
+    return newPriceData.price;
   }
 
   // Savings tooltip
