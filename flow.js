@@ -192,12 +192,6 @@ function fixNum(raw) {
   return Number(Number(raw).toFixed(2));
 }
 
-console.log('Config before getPrice:', {
-  insightsAddOn: config.insightsAddOn,
-  rewardsAddOn: config.rewardsAddOn,
-  rubricAddOn: config.rubricAddOn
-});
-
 function getPrice({
   users,
   districtDiscount = config.districtDiscount,
@@ -1106,6 +1100,115 @@ function runRenewalLogic() {
       document.getElementById("renewal-form__step-heading__plan").textContent =
         "Starter plan";
     }
+
+    // Upsell modal functionality
+    function setupUpsellModal() {
+      const upsellModal = document.getElementById("upsell-modal");
+      const upsellClose = document.getElementById("upsell-close");
+      const upsellConfirm = document.getElementById("upsell-confirm");
+      const upsellDeny = document.getElementById("upsell-deny");
+      const upsellTotal = document.getElementById("upsell-total");
+      const rewardsCheckbox = document.getElementById("renewal-form__addon--rewards");
+
+      function calculateUpsellTotal() {
+        const currentPrice = document.getElementById("renewal-form__quote-display").textContent;
+        const rewardsAddon = document.getElementById("renewal-form__addon--rewards--price").textContent;
+        const currentPriceNum = parseFloat(currentPrice.replace(/[$,]/g, ''));
+        const rewardsPriceNum = parseFloat(rewardsAddon.replace(/[+$,]/g, ''));
+        const newTotal = currentPriceNum + rewardsPriceNum;
+        return formatPrice(newTotal);
+      }
+
+      function showUpsellModal() {
+        upsellModal.classList.add("visible");
+        document.body.style.overflow = "hidden";
+        const newTotal = calculateUpsellTotal();
+        upsellTotal.textContent = newTotal;
+      }
+
+      window.playVideo = function () {
+        const thumbnail = document.querySelector('#upsell-modal .video-thumbnail');
+        const iframeContainer = document.querySelector('#upsell-modal #iframeContainer');
+
+        if (!iframeContainer || !thumbnail) {
+          console.error('Could not find video elements');
+          return;
+        }
+
+        // Hide thumbnail, show iframe container
+        thumbnail.style.display = 'none';
+        iframeContainer.style.display = 'block';
+
+        // Insert the iframe
+        iframeContainer.innerHTML = `
+          <iframe 
+            src="https://www.youtube.com/embed/o0_qg242oZY?autoplay=1&mute=0" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            referrerpolicy="strict-origin-when-cross-origin" 
+            allowfullscreen
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;">
+          </iframe>
+        `;
+      };
+
+      function hideUpsellModal() {
+        upsellModal.classList.remove("visible");
+        document.body.style.overflow = "";
+
+        // Reset video embed
+        const thumbnail = upsellModal.querySelector('.video-thumbnail');
+        const iframeContainer = upsellModal.querySelector('#iframeContainer');
+        if (thumbnail && iframeContainer) {
+          thumbnail.style.display = 'block';
+          iframeContainer.style.display = 'none';
+          iframeContainer.innerHTML = '';
+        }
+      }
+
+      // Check if we should show modal when going to step 2
+      const originalGoToStepTwo = goToStepTwo.onclick;
+      goToStepTwo.onclick = function (e) {
+        const currentPlan = planSwitcher.currentPlan;
+        const isRewardsChecked = rewardsCheckbox ? rewardsCheckbox.checked : false;
+
+        // Show modal if on starter plan and rewards not selected
+        if (currentPlan === "starter" && !isRewardsChecked) {
+          e.preventDefault();
+          showUpsellModal();
+        } else {
+          // Proceed normally
+          displayFormStepTwo();
+        }
+      };
+
+      // Close button
+      upsellClose.addEventListener("click", () => {
+        hideUpsellModal();
+        displayFormStepTwo();
+      });
+
+      // Deny button
+      upsellDeny.addEventListener("click", () => {
+        hideUpsellModal();
+        displayFormStepTwo();
+      });
+
+      // Confirm button - add rewards addon and proceed
+      upsellConfirm.addEventListener("click", () => {
+        if (rewardsCheckbox) {
+          rewardsCheckbox.checked = true;
+          // Trigger change event to update pricing
+          rewardsCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        hideUpsellModal();
+        displayFormStepTwo();
+      });
+    }
+
+    // Initialize upsell modal
+    setupUpsellModal();
 
     // Recommendation message on top
     const recommendationMessage = document.getElementById(
