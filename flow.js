@@ -232,7 +232,10 @@ function getPrice({
   const premiumPerUser = tier.premiumPerUser;
   const basePerUser = planType === "starter" ? starterPerUser : premiumPerUser;
 
-  const addOnListPrice = Math.ceil(users * tier.insightsAddOn);
+  const addonMultiYearDiscount = config.multiYearDiscounts[multiYear];
+  const baseAddonPrice = Math.ceil(users * tier.insightsAddOn);
+  const discountedAddonPrice = baseAddonPrice * (1 - addonMultiYearDiscount);
+  const addOnListPrice = discountedAddonPrice * multiYear;
 
   const addons = {
     insightsAddOn: {
@@ -894,7 +897,7 @@ function runRenewalLogic() {
     const users = parseInt(document.getElementById("renewal-form__users").value) || 0;
     const subscriptionTerm = document.getElementById("renewal-form__subscription-term");
     const multiYear = subscriptionTerm ? parseInt(subscriptionTerm.value) : 1;
-    
+
     // Calculate what the price would be with rewards addon enabled
     const pricingDataWithRewards = {
       users: users,
@@ -906,7 +909,7 @@ function runRenewalLogic() {
       slOnboardingAddOn: document.getElementById("renewal-form__addon--admin-onboarding")?.checked || false,
       teacherTrainingAddOn: document.getElementById("renewal-form__addon--teacher-training")?.checked || false,
     };
-    
+
     const newPriceData = getPrice(pricingDataWithRewards);
     return newPriceData.price;
   }
