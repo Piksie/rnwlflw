@@ -1913,10 +1913,6 @@ function runRenewalLogic() {
           }
 
           updatePricing();
-
-          if (id === "renewal-form__addon--unlimited-rubric") {
-            updateRubricPrice();
-          }
         });
       }
     });
