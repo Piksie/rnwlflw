@@ -1850,45 +1850,6 @@ function runRenewalLogic() {
   /*
 /* ========== LISTEN FOR FIELDS CHANGES ========== */
 
-  function updateRubricPrice() {
-    const users = document.getElementById("renewal-form__users");
-    const subscriptionTerm = document.getElementById(
-      "renewal-form__subscription-term"
-    );
-    const userCount = parseInt(users.value) || 0;
-    const multiYear = subscriptionTerm ? parseInt(subscriptionTerm.value) : 1;
-
-    // Add logging
-    console.log("Current values:", {
-      userCount,
-      multiYear,
-      currentPlan: planSwitcher.currentPlan,
-    });
-
-    // Get the appropriate tier based on user count
-    let tier;
-    for (var p = 0; p < config.prices.length; p++) {
-      if (userCount >= config.prices[p].staffCount) {
-        tier = config.prices[p];
-      }
-    }
-
-    if (tier) {
-      const basePrice = Math.ceil(userCount * tier.rubricAddOn);
-      const multiYearDiscount = config.multiYearDiscounts[multiYear] || 0;
-      const discountedPrice = basePrice * (1 - multiYearDiscount);
-      // Multiply by number of years to get total price
-      const totalPrice = discountedPrice * multiYear;
-
-      const priceElement = document.getElementById(
-        "renewal-form__addon--unlimited-rubric--price"
-      );
-      if (priceElement) {
-        priceElement.textContent = formatPrice(totalPrice);
-      }
-    }
-  }
-
   function setupPricingListeners() {
     // Listen for multiYear dropdown changes
     const subscriptionTerm = document.getElementById(
@@ -1897,7 +1858,6 @@ function runRenewalLogic() {
     if (subscriptionTerm) {
       subscriptionTerm.addEventListener("change", () => {
         updatePricing();
-        updateRubricPrice();
       });
     }
 
@@ -1906,7 +1866,6 @@ function runRenewalLogic() {
     if (users) {
       users.addEventListener("input", () => {
         updatePricing();
-        updateRubricPrice();
       });
     }
 
